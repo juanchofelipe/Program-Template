@@ -11,6 +11,7 @@ use yii\helpers\Security;
 use backend\models\Role;
 use yii\helpers\ArrayHelper;
 use backend\models\Status;
+use backend\models\UserType;
 
 /**
  * User model
@@ -70,6 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['role_id', 'default', 'value' => 10],
             [['role_id'], 'in', 'range' => array_keys($this->getRoleList())],
             ['user_type_id', 'default', 'value' => 10],
+            [['user_type_id'], 'in', 'range' => array_keys($this->getUserTypeList())],
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
             ['username', 'unique'],
@@ -275,5 +277,26 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $droptions = $this->find()->asArray()->all();
         return ArrayHelper::map($droptions, 'status_value', 'status_name');
+    }
+
+    public function getUserType()
+    {
+        return $this->hasOne(UserType::className(), ['user_type_value' => 'user_type_id']);
+    }
+
+    public function getUserTypeName()
+    {
+        return $this->userType ? $this->userType->user_type_name : '-No user type-';
+    }
+
+    public function getUserTypeList()
+    {
+        $droptions = $this->find()->asArray()->all();
+        return ArrayHelper::map($droptions, 'user_type_value', 'user_type_name');
+    }
+
+    public function getUserTypeId()
+    {
+        return $this->userType ? $this->userType->id : 'none';
     }
 }
