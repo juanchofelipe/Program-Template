@@ -10,6 +10,7 @@ use yii\db\Expression;
 use yii\helpers\Security;
 use backend\models\Role;
 use yii\helpers\ArrayHelper;
+use backend\models\Status;
 
 /**
  * User model
@@ -65,7 +66,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status_id', 'default', 'value' => self::STATUS_ACTIVE],
+            [['status_id'], 'in', 'range' => array_keys($this->getStatusList())],
             ['role_id', 'default', 'value' => 10],
+            [['role_id'], 'in', 'range' => array_keys($this->getRoleList())],
             ['user_type_id', 'default', 'value' => 10],
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
@@ -75,7 +78,6 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique'],
-            [['role_id'], 'in', 'range' => array_keys($this->getRoleList())]    
         ];
     }
 
@@ -245,5 +247,33 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $droptions = Role::find()->asArray()->all();
         return ArrayHelper::map($droptions, 'role_value', 'role_name');
+    }
+
+    /**
+     * Relation with Status
+     * @return \yii\db\ActiveQuery Status
+     */
+    public function getStatus()
+    {
+        return $this->hasOne(Status::className, ['status_value' => 'status_id']);
+    }
+
+    /**
+     * Get the status name
+     * @return String Status of the user
+     */
+    public function getStatusName()
+    {
+        return $this->status ? $this->status->status_name : '-No Status-';
+    }
+
+    /**
+     * Get list of status for dropdown
+     * @return String[][] Array of status
+     */
+    public function getStatusList()
+    {
+        $droptions = $this->find()->asArray()->all();
+        return ArrayHelper::map($droptions, 'status_value', 'status_name');
     }
 }
