@@ -8,6 +8,8 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\db\Expression;
 use yii\helpers\Security;
+use backend\models\Role;
+use yii\helpers\ArrayHelper;
 
 /**
  * User model
@@ -72,7 +74,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'filter', 'filter' => 'trim'],
             ['email', 'required'],
             ['email', 'email'],
-            ['email', 'unique']
+            ['email', 'unique'],
+            [['role_id'], 'in', 'range' => array_keys($this->getRoleList())]    
         ];
     }
 
@@ -205,5 +208,42 @@ class User extends ActiveRecord implements IdentityInterface
     public function removePasswordResetToken()
     {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * Profile of the user
+     * @return \yii\db\ActiveQuery        Profile
+     */
+    public function getProfile()
+    {
+        return $this->hasOne(Profile::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * Role of the User
+     * @return \yii\db\ActiveQuery Role
+     */
+    public function getRole()
+    {
+        return $this->hasOne(Role::className(), ['role_value' => 'role_id']);
+    }
+
+    /**
+     * Get the name of the user's name
+     * @return String Name of the role
+     */
+    public function getRoleName()
+    {
+        return $this->role ? $this->role->role_name : '-No Role-';
+    }
+
+    /**
+     * Get list of roles for dropdown
+     * @return String[][] Array of roles
+     */
+    public function getRoleList()
+    {
+        $droptions = Role::find()->asArray()->all();
+        return ArrayHelper::map($droptions, 'role_value', 'role_name');
     }
 }
