@@ -23,7 +23,7 @@ class ProfileController extends Controller
     {
         return [
             'access' => [
-                'class' => \yii\filters\AcceessControl::className(),
+                'class' => \yii\filters\AccessControl::className(),
                 'only' => ['index', 'view', 'create', 'update', 'delete'],
                 'rules' => [
                     [

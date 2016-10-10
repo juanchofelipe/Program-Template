@@ -52,7 +52,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'timestamp' => [
-                'class'         => 'yii\behaviours\TimestampBehavior',
+                'class'         => 'yii\behaviors\TimestampBehavior',
                 'attributes'    => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at']
@@ -61,7 +61,7 @@ class User extends ActiveRecord implements IdentityInterface
             ]
         ];
     }
-
+    // FIXME: The ranges methods
     /**
      * @inheritdoc
      */
@@ -69,11 +69,11 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status_id', 'default', 'value' => self::STATUS_ACTIVE],
-            [['status_id'], 'in', 'range' => array_keys($this->getStatusList())],
+            //[['status_id'], 'in', 'range' => array_keys($this->getStatusList())],
             ['role_id', 'default', 'value' => 10],
-            [['role_id'], 'in', 'range' => array_keys($this->getRoleList())],
+            //[['role_id'], 'in', 'range' => array_keys($this->getRoleList())],
             ['user_type_id', 'default', 'value' => 10],
-            [['user_type_id'], 'in', 'range' => array_keys($this->getUserTypeList())],
+            //[['user_type_id'], 'in', 'range' => array_keys($this->getUserTypeList())],
             ['username', 'filter', 'filter' => 'trim'],
             ['username', 'required'],
             ['username', 'unique'],
