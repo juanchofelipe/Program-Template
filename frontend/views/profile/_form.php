@@ -20,7 +20,14 @@ use yii\jui\DatePicker;
 
     <?= $form->field($model, 'birthdate')->widget(
             DatePicker::className(),
-            ['clientOptions' => ['dateFormat' => 'yy-mm-dd']]
+            [
+                'dateFormat' => 'yyyy-MM-dd',
+                'clientOptions' => [
+                    'changeMonth' => true,
+                    'changeYear' => true,
+                    'yearRange' => '1900:+nn'
+                ]
+            ]
         ) ?>
     <br>
     <?= $form->field($model, 'gender_id')->dropDownList(

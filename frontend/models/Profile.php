@@ -45,8 +45,8 @@ class Profile extends \yii\db\ActiveRecord
             [['user_id', 'gender_id'], 'integer'],
             [['first_name', 'last_name'], 'string'],
             [['birthdate', 'created_at', 'updated_at'], 'safe'],
-            //[['gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gender::className(), 'targetAttribute' => ['gender_id' => 'id']],
-            //[['gender_id'], 'in', 'range' => array_keys($this->getGenderList())],
+            [['gender_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gender::className(), 'targetAttribute' => ['gender_id' => 'id']],
+            [['gender_id'], 'in', 'range' => array_keys($this->getGenderList())],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -69,6 +69,15 @@ class Profile extends \yii\db\ActiveRecord
             'userLink' => Yii::t('app', 'User'),
             'profileIdLink' => Yii::t('app', 'Profile')
         ];
+    }
+
+    public function beforeValidate()
+    {
+        if ($this->birthdate != null) {
+            $new_date_format = date('Y-m-d', strtotime($this->birthdate));
+        }
+
+        return parent::beforeValidate();
     }
 
     public function behaviors()
@@ -108,7 +117,8 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getGenderList()
     {
-        $droptions = $this->find()->asArray()->all();
+        //$droptions = Gender::asArray();
+        $droptions = Gender::find()->all();
         return ArrayHelper::map($droptions, 'id', 'gender_name');
     }
 
