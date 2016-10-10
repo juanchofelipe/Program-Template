@@ -67,7 +67,7 @@ class ProfileController extends Controller
     {
         if ($already_exists = RecordHelpers::userHas('profile')) {
             return $this->render('view', [
-                'model' => $this->findModel($id),
+                'model' => $this->findModel($already_exists),
             ]);
         } else {
             return $this->redirect(['create']);
