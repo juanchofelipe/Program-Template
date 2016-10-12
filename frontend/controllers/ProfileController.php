@@ -29,7 +29,10 @@ class ProfileController extends Controller
                     [
                         'actions' => ['index', 'view', 'create', 'update', 'delete'],
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return PermissionHelpers::requireStatus('Active');
+                        }
                     ]
                 ]
             ],
@@ -115,6 +118,8 @@ class ProfileController extends Controller
      */
     public function actionUpdate()
     {
+        PermissionHelpers::requireUpgradeTo('Paid');
+
         if ($model = Profile::findOne(
                 ['user_id' => Yii::$app->user->identity->id])) {
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
