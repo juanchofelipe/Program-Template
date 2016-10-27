@@ -9,8 +9,11 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+use common\models\ValueHelpers;
+use backend\assets\FontAwesomeAsset;
 
 AppAsset::register($this);
+FontAwesomeAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -27,16 +30,38 @@ AppAsset::register($this);
 
 <div class="wrap">
     <?php
-    NavBar::begin([
-        'brandLabel' => 'My Company',
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
+    $is_admin = ValueHelpers::getRoleValue('Admin');
+
+    if (!Yii::$app->user->isGuest) {
+        NavBar::begin([
+            'brandLabel' => 'First <i class="fa fa-plug"></i> Admin',
+            'brandUrl' => Yii::$app->homeUrl,
+            'options' => [
+                'class' => 'navbar-inverse navbar-fixed-top',
+            ],
+        ]);
+    } else {
+        NavBar::begin([
+            'brandLabel' => 'First <i class="fa fa-plug"></i>',
+            'brandUrl' => Yii::$app->homeUrl,
+            'options' => [
+                'class' => 'navbar-inverse navbar-fixed-top',
+            ],
+        ]);
+    }
+
     $menuItems = [
         ['label' => 'Home', 'url' => ['/site/index']],
     ];
+
+    if (!Yii::$app->user->isGuest && Yii::$app->user->identity->role_id >= $is_admin) {
+        $menuItems[] = ['label' => 'Users', 'url' => ['user/index']];
+        $menuItems[] = ['label' => 'Profiles', 'url' => ['profile/index']];
+        $menuItems[] = ['label' => 'Roles', 'url' => ['/role/index']];
+        $menuItems[] = ['label' => 'User Types', 'url' => ['/user-type/index']];
+        $menuItems[] = ['label' => 'Statuses', 'url' => ['/status/index']];
+    }
+
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
     } else {
@@ -67,7 +92,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; First <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>

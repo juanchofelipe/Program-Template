@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use \yii\bootstrap\Collapse;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\search\ProfileSearch */
@@ -13,7 +14,16 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="profile-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
+    echo Collapse::widget([
+        'items' => [
+            [
+                'label' => 'Search',
+                'content' => $this->render('_search', ['model' => $searchModel]),
+            ]
+        ]
+    ]);
+    ?>
 
     <p>
         <?= Html::a('Create Profile', ['create'], ['class' => 'btn btn-success']) ?>
@@ -24,12 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'user_id',
+            //'id',
+            ['attribute' => 'profileIdLink', 'format' => 'raw'],
+            ['attribute' => 'userLink', 'format' => 'raw'],
             'first_name:ntext',
             'last_name:ntext',
             'birthdate',
-            // 'gender_id',
+            'genderName',
             // 'created_at',
             // 'updated_at',
 

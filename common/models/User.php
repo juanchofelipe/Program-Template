@@ -12,6 +12,7 @@ use backend\models\Role;
 use yii\helpers\ArrayHelper;
 use backend\models\Status;
 use backend\models\UserType;
+use frontend\models\Profile;
 use yii\helpers\Url;
 use yii\helpers\Html;
 
@@ -264,7 +265,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getRoleList()
     {
-        $droptions = Role::find()->asArray()->all();
+        $droptions = Role::find()->all();
         return ArrayHelper::map($droptions, 'role_value', 'role_name');
     }
 
@@ -274,7 +275,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getStatus()
     {
-        return $this->hasOne(Status::className, ['status_value' => 'status_id']);
+        return $this->hasOne(Status::className(), ['status_value' => 'status_id']);
     }
 
     /**
@@ -292,7 +293,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getStatusList()
     {
-        $droptions = $this->find()->asArray()->all();
+        $droptions = Status::find()->all();
         return ArrayHelper::map($droptions, 'status_value', 'status_name');
     }
 
@@ -308,7 +309,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserTypeList()
     {
-        $droptions = $this->find()->asArray()->all();
+        $droptions = UserType::find()->all();
         return ArrayHelper::map($droptions, 'user_type_value', 'user_type_name');
     }
 
@@ -324,7 +325,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getProfileLink()
     {
-        $url = Url::to(['profile/view', 'id' => $this->profileId()]);
+        $url = Url::to(['profile/view', 'id' => $this->getProfileId()]);
         $options = [];
         return Html::a($this->profile ? 'profile' : 'none', $url, $options);
     }
